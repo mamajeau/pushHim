@@ -13,7 +13,6 @@ public class Mouvement {
     int colonneDepart;
     int colonneArrivee;
     int poids=0;
-    Convertisseur convertisseur= Convertisseur.getInstance();
 
     public Mouvement(int ligneDepart, int colonneDepart, int ligneArrivee, int colonneArrivee)
     {

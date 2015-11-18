@@ -23,10 +23,9 @@ public class IA {
     public Mouvement choixCoup()
     {
         startTime = System.currentTimeMillis();
-        int[] board = plateau.board;
         Random randomizer = new Random();
         //Minmax represente le noeud racine duquel decoulera le reste de l'arbre
-        minMax = new Noeud(board,null);
+        minMax = new Noeud(plateau.board,null);
         //Appel recursif de la fonction qui va generer les noeuds du minmax
         genererNoeuds(minMax,plateau,this.couleur);
 
@@ -44,7 +43,7 @@ public class IA {
     //un enfant par mouvement possible et on y associe un poid aleatoire. A chaque appel, on inverse la couleur utilisee precedemment.
     private void genererNoeuds(Noeud racine, Plateau p,boolean couleur){
         long stopTime = System.currentTimeMillis();
-        //L'arbre va arreter de faire apres 4 secondes
+        //L'arbre va arreter de faire apres 3 secondes
        if ((stopTime - startTime) > 3000){
             return;
         }
