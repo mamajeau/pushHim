@@ -22,6 +22,4 @@ public class Mouvement {
         this.ligneArrivee = ligneArrivee;
         this.colonneArrivee = colonneArrivee;
     }
-
-
 }

@@ -14,7 +14,7 @@ public class Jeu {
         this.ia=new IA(this.plateau);
     }
 
-    public void construirePlateau(int[][] board) {
+    public void construirePlateau(int[] board) {
 
         this.plateau = new Plateau(board);
     }

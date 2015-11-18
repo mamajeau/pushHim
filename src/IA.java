@@ -23,7 +23,7 @@ public class IA {
     public Mouvement choixCoup()
     {
         startTime = System.currentTimeMillis();
-        int[][] board = plateau.board;
+        int[] board = plateau.board;
         Random randomizer = new Random();
         //Minmax represente le noeud racine duquel decoulera le reste de l'arbre
         minMax = new Noeud(board,null);
@@ -35,7 +35,7 @@ public class IA {
     }
 
     //Fonction qui evaluera un plateau et lui assignera une valeur
-    private int evaluerPlateau(int[][] board){
+    private int evaluerPlateau(int[] board){
         Random randomizer = new Random();
         int poids = randomizer.nextInt(50);
         return poids;
@@ -45,14 +45,14 @@ public class IA {
     private void genererNoeuds(Noeud racine, Plateau p,boolean couleur){
         long stopTime = System.currentTimeMillis();
         //L'arbre va arreter de faire apres 4 secondes
-       if ((stopTime - startTime) > 3000){
+       if ((stopTime - startTime) > 100000){
             return;
         }
         ArrayList<Mouvement> mouvementsPossibles;
         mouvementsPossibles = p.genererMouvements(couleur);
         //Boucle qui creera et associera chaque mouvement possible a la racine passee en parametre
         for (int i = 0; i < mouvementsPossibles.size(); i++) {
-            int[][] boardEnfant = p.deplacerDansBoard(mouvementsPossibles.get(i).ligneDepart, mouvementsPossibles.get(i).colonneDepart, mouvementsPossibles.get(i).ligneArrivee, mouvementsPossibles.get(i).colonneArrivee);
+            int[] boardEnfant = p.deplacerDansBoard(mouvementsPossibles.get(i).ligneDepart, mouvementsPossibles.get(i).colonneDepart, mouvementsPossibles.get(i).ligneArrivee, mouvementsPossibles.get(i).colonneArrivee);
             mouvementsPossibles.get(i).poids = evaluerPlateau(boardEnfant);
             racine.ajouterEnfant(new Noeud(boardEnfant, mouvementsPossibles.get(i)));
         }
@@ -70,9 +70,10 @@ public class IA {
         mouvementAFaire = choixCoup();
 
         //On deplace dans notre plateau global
-        String deplacement=plateau.deplacer(mouvementAFaire.ligneDepart,mouvementAFaire.colonneDepart,mouvementAFaire.ligneArrivee,mouvementAFaire.colonneArrivee);
+        //String deplacement=plateau.deplacer(mouvementAFaire.ligneDepart,mouvementAFaire.colonneDepart,mouvementAFaire.ligneArrivee,mouvementAFaire.colonneArrivee);
 
 
-        return deplacement;
+        //return deplacement;
+        return null;
     }
 }

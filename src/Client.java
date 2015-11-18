@@ -8,7 +8,7 @@ class Client {
         BufferedInputStream input;
         BufferedOutputStream output;
         Joueur joueur = new Joueur();
-        int[][] board = new int[8][8];
+        int[] board = new int[64];
         Jeu jeu=null;
         try {
             MyClient = new Socket("localhost", 8888);
@@ -32,14 +32,10 @@ class Client {
                     System.out.println(s);
                     String[] boardValues;
                     boardValues = s.split(" ");
-                    int x=0,y=0;
+                    int x=0;
                     for(int i=0; i<boardValues.length;i++){
-                        board[x][y] = Integer.parseInt(boardValues[i]);
-                        y++;
-                        if(y == 8){
-                            y = 0;
-                            x++;
-                        }
+                        board[x] = Integer.parseInt(boardValues[i]);
+                        x++;
                     }
 
                     jeu = new Jeu();
@@ -69,15 +65,11 @@ class Client {
                         System.out.println(s);
                         String[] boardValues;
                         boardValues = s.split(" ");
-                        int x=0,y=0;
+                        int x=0;
                         for(int i=0; i<boardValues.length;i++){
-                            board[x][y] = Integer.parseInt(boardValues[i]);
-                            y++;
-                        if(y == 8){
-                            y = 0;
+                            board[x] = Integer.parseInt(boardValues[i]);
                             x++;
                         }
-                    }
                         jeu = new Jeu();
                         //Initialisation du jeu
                         jeu.construirePlateau(board);
