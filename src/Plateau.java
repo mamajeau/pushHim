@@ -109,77 +109,89 @@ public class Plateau implements Cloneable{
     public ArrayList<Mouvement> genererMouvements(boolean couleur){
 
         ArrayList<Mouvement> arrayMouvements = new ArrayList<Mouvement>();
-        ArrayList<Integer> pousseurs = null;
+        ArrayList<Integer> listpousseurs = null;
 
-        int cible,ennemi1,ennemi2,pousse,direction;
+        int cible,ennemi1,ennemi2,pousse,pousseur,direction;
 
         if(couleur){
-            pousseurs = pousseurBlanc;
+            listpousseurs = pousseurBlanc;
             ennemi1 = POUSSE_NOIR;
             ennemi2 = POUSSEUR_NOIR;
             pousse = POUSSE_BLANC;
+            pousseur = POUSSEUR_BLANC;
             direction = -1;
         }else{
-            pousseurs = pousseurNoir;
+            listpousseurs = pousseurNoir;
             ennemi1 = POUSSE_BLANC;
             ennemi2 = POUSSEUR_BLANC;
             pousse = POUSSE_NOIR;
+            pousseur = POUSSEUR_NOIR;
             direction = + 1;
         }
 
-        for (int i = 0; i < pousseurs.size(); i++) {
+        for (int i = 0; i < listpousseurs.size(); i++) {
 
-            int position = pousseurs.get(i);
+            int position = listpousseurs.get(i);
             //gauche blanc - droite noir
-            if((position % 8 != 0 && direction == 1)||(position % 8 != 7 && direction == -1)) {
-                cible = board[position + (direction * 7)];
-                //case libre ou mange ennemi
-                if (cible == 0 || cible == ennemi1 || cible == ennemi2) {
-                    arrayMouvements.add(new Mouvement(position/8,position%8,(position+(direction * 7))/8,(position+(direction * 7))%8));
-                }
-                //pousse
-                if(cible == pousse)
-                {   if((position+(direction * 7))%8 != 0) {
-                    int cible2 = board[position + (direction * 14)];
+            if((position % 8 != 0 && direction == -1)||(position % 8 != 7 && direction == 1)) {
+                if ((position + (direction * 7)) > 0 && position + (direction * 7) < 63) {
+                    cible = board[position + (direction * 7)];
                     //case libre ou mange ennemi
-                    if (cible2 == 0 || cible2 == ennemi1 || cible2 == ennemi2) {
-                        arrayMouvements.add(new Mouvement((position + (direction * 7)) / 8, (position + (direction * 7)) % 8, (position + (direction * 14)) / 8, (position + (direction * 14)) % 8));
+                    if ((cible == 0 || cible == ennemi1 || cible == ennemi2)&& (cible != pousse)||cible != pousseur) {
+                        arrayMouvements.add(new Mouvement(position / 8, position % 8, (position + (direction * 7)) / 8, (position + (direction * 7)) % 8));
                     }
-                }
+                    //pousse
+                    if (cible == pousse) {
+                        if ((position + (direction * 7) % 8 != 0 && direction == 1) || (position % 8 != 7 && direction == -1)) {
+                            if ((position + (direction * 14)) > 0 && position + (direction * 14) < 63) {
+                                if ((position + (direction * 7)) % 8 != 0) {
+                                    int cible2 = board[position + (direction * 14)];
+                                    //case libre ou mange ennemi
+                                    if ((cible2 == 0 || cible2 == ennemi1 || cible2 == ennemi2)&& (cible != pousse)||cible != pousseur) {
+                                        arrayMouvements.add(new Mouvement((position + (direction * 7)) / 8, (position + (direction * 7)) % 8, (position + (direction * 14)) / 8, (position + (direction * 14)) % 8));
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             //haut
-            cible = board[position+(direction * 8)];
-            //case libre
-            if(cible == 0)
-            {
-                arrayMouvements.add(new Mouvement(position/8,position%8,(position+(direction * 8))/8,position%8));
-            }
-            //pousse
-            if(cible == pousse)
-            {
-                if(board[position+(direction * 16)] == 0)
-                {
-                    arrayMouvements.add(new Mouvement((position+(direction * 8))/8,position%8,(position+(direction * 16))/8,position%8));
-                }
-            }
-
-            //droite blanc - gauche noir
-            if((position % 8 != 0 && direction == -1)||(position % 8 != 7 && direction == 1)) {
-                cible = board[position + (direction * 9)];
-                //case libre ou mange ennemi
-                if (cible == 0 || cible == ennemi1 || cible == ennemi2) {
-                    arrayMouvements.add(new Mouvement(position/8,position%8,(position+(direction * 9))/8,(position+(direction * 9))%8));
-                }
-                //pousse
-                if(cible == pousse)
-                {   if(((position+(9*direction)) % 8 != 0 && direction == -1)||((position + (9*direction)) % 8 != 7 && direction == 1)) {
-                    int cible2 = board[position + (direction * 18)];
-                    //case libre ou mange ennemi
-                    if (cible2 == 0 || cible2 == ennemi1 || cible2 == ennemi2) {
-                        arrayMouvements.add(new Mouvement((position + (direction * 9)) / 8, (position + (direction * 9)) % 8, (position + (direction * 18)) / 8, (position + (direction * 18)) % 8));
+            if(((position+(direction * 8))/8 < 0 && direction == -1)||((position+(direction * 8))/8 > 7 && direction == 1)) {
+                if ((position + (direction * 8)) > 0 && position + (direction * 8) < 63) {
+                    cible = board[position + (direction * 8)];
+                    //case libre
+                    if (cible == 0) {
+                        arrayMouvements.add(new Mouvement(position / 8, position % 8, (position + (direction * 8)) / 8, position % 8));
+                    }
+                    //pousse
+                    if (cible == pousse) {
+                        if ((position + (direction * 16)) > 0 && position + (direction * 16) < 63) {
+                            if (board[position + (direction * 16)] == 0) {
+                                arrayMouvements.add(new Mouvement((position + (direction * 8)) / 8, position % 8, (position + (direction * 16)) / 8, position % 8));
+                            }
+                        }
                     }
                 }
+            }
+            //droite blanc - gauche noir
+            if((position % 8 != 0 && direction == -1)||(position % 8 != 7 && direction == 1)) {
+                if ((position + (direction * 9)) > 0 && position + (direction * 9) < 63) {
+                    cible = board[position + (direction * 9)];
+                    //case libre ou mange ennemi
+                    if ((cible == 0 || cible == ennemi1 || cible == ennemi2)&& (cible != pousse)||cible != pousseur) {
+                        arrayMouvements.add(new Mouvement(position / 8, position % 8, (position + (direction * 9)) / 8, (position + (direction * 9)) % 8));
+                    }
+                    //pousse
+                    if (cible == pousse && (position + (direction * 18)) > 0 && position + (direction * 18) < 63) {
+                        if (((position + (9 * direction)) % 8 != 0 && direction == 1) || ((position + (9 * direction)) % 8 != 7 && direction == -1)) {
+                            int cible2 = board[position + (direction * 18)];
+                            //case libre ou mange ennemi
+                            if ((cible2 == 0 || cible2 == ennemi1 || cible2 == ennemi2)&& (cible != pousse)||cible != pousseur) {
+                                arrayMouvements.add(new Mouvement((position + (direction * 9)) / 8, (position + (direction * 9)) % 8, (position + (direction * 18)) / 8, (position + (direction * 18)) % 8));
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -203,7 +215,9 @@ public class Plateau implements Cloneable{
         int ligneArrivee = 8 - (Integer.parseInt((String)(""+sousResultat[1].charAt(1))));
 
         //Mise a jour des listes de pousseur
-        //miseAJourPousseur(ligneDepart, colonneDepart, ligneArrivee, colonneArrivee);
+        if(board[(ligneDepart*8)+colonneDepart] == POUSSEUR_BLANC || board[(ligneDepart*8)+colonneDepart] == POUSSEUR_NOIR)
+        {miseAJourPousseur(ligneDepart, colonneDepart, ligneArrivee, colonneArrivee);}
+
         deplacer(ligneDepart,colonneDepart,ligneArrivee,colonneArrivee);
     }
 
@@ -266,20 +280,20 @@ public class Plateau implements Cloneable{
 		System.out.println(blanc);
 		System.out.println(noir);
 	}
-
-	//Fonction pour mettre a jour les pousseur
+*/
+	//Fonction pour mettre a jour les pousseur x == ligne  y==colonne
 	public void miseAJourPousseur(int xDepart, int yDepart, int xArrivee, int yArrivee){
 		for(int i = 0; i<=7; i++){
-			if(pousseurBlanc.get(i).getY() == yDepart && pousseurBlanc.get(i).getX() == xDepart){
+			if(pousseurBlanc.get(i) % 8 == yDepart && pousseurBlanc.get(i)/8 == xDepart){
 				System.out.println("Mise a jour blanc");
 				pousseurBlanc.remove(i);
-				pousseurBlanc.add(i, new Pousseur(true, xArrivee, yArrivee));
-			}else if(pousseurNoir.get(i).getY() == yDepart && pousseurNoir.get(i).getX() == xDepart){
+				pousseurBlanc.add((xArrivee*8)+ yArrivee);
+			}else if(pousseurNoir.get(i)%8 == yDepart && pousseurNoir.get(i)/8 == xDepart){
 				System.out.println("Mise a jour noir");
 				pousseurNoir.remove(i);
-				pousseurNoir.add(i, new Pousseur(false, xArrivee, yArrivee));
+				pousseurNoir.add((xArrivee*8)+ yArrivee);
 			}
 		}
-	}*/
+	}
 
 }

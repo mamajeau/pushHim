@@ -45,7 +45,7 @@ public class IA {
     private void genererNoeuds(Noeud racine, Plateau p,boolean couleur){
         long stopTime = System.currentTimeMillis();
         //L'arbre va arreter de faire apres 4 secondes
-       if ((stopTime - startTime) > 100000){
+       if ((stopTime - startTime) > 3000){
             return;
         }
         ArrayList<Mouvement> mouvementsPossibles;
@@ -70,10 +70,11 @@ public class IA {
         mouvementAFaire = choixCoup();
 
         //On deplace dans notre plateau global
-        //String deplacement=plateau.deplacer(mouvementAFaire.ligneDepart,mouvementAFaire.colonneDepart,mouvementAFaire.ligneArrivee,mouvementAFaire.colonneArrivee);
+        System.out.println(mouvementAFaire.colonneDepart + " " + mouvementAFaire.ligneDepart);
+        String deplacement=plateau.deplacer(mouvementAFaire.ligneDepart,mouvementAFaire.colonneDepart,mouvementAFaire.ligneArrivee,mouvementAFaire.colonneArrivee);
+        System.out.println("Notre coup: "+deplacement);
 
+        return deplacement;
 
-        //return deplacement;
-        return null;
     }
 }
