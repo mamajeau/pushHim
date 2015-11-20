@@ -17,10 +17,10 @@ public class Plateau implements Cloneable{
     int[] board;
 
     Convertisseur conv = Convertisseur.getInstance();
-    private ArrayList<Integer> pousseurNoir = new ArrayList<>();
-    private ArrayList<Integer> pousseurBlanc = new ArrayList<>();
-    private ArrayList<Integer> pousseNoir = new ArrayList<>();
-    private ArrayList<Integer> pousseBlanc = new ArrayList<>();
+    public ArrayList<Integer> pousseurNoir = new ArrayList<>();
+    public ArrayList<Integer> pousseurBlanc = new ArrayList<>();
+    public ArrayList<Integer> pousseNoir = new ArrayList<>();
+    public ArrayList<Integer> pousseBlanc = new ArrayList<>();
 
     public Plateau(int[] board){
         this.board = board;

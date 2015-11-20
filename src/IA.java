@@ -15,6 +15,10 @@ public class IA {
     boolean couleur;
     long startTime;
 
+    //Valeur arbitaire pour tout changer partout
+    int poidsPousseur=2;
+    int poidsPousse=1;
+
     public IA(Plateau plateau)
     {
         this.plateau=plateau;
@@ -34,11 +38,42 @@ public class IA {
     }
 
     //Fonction qui evaluera un plateau et lui assignera une valeur
-    private int evaluerPlateau(int[] board){
+    private int evaluerVieux(int[] board){
         Random randomizer = new Random();
         int poids = randomizer.nextInt(50);
         return poids;
     }
+
+    //Fonction devaluation
+    private int evaluationPlateau(Plateau plateau)
+    {
+        int poidsNoir=0;
+        int poidsBlanc=0;
+        //Calcule du nombre de piece
+        poidsBlanc+=plateau.pousseBlanc.size()*poidsPousse;
+        poidsBlanc+=plateau.pousseurBlanc.size()*poidsPousseur;
+
+        poidsNoir+=plateau.pousseNoir.size()*poidsPousse;
+        poidsNoir+=plateau.pousseurNoir.size()*poidsPousseur;
+
+        //Calcule du poids par rapport a la position
+        for(int z=0;z< plateau.board.length;z++)
+        {
+            if(plateau.board[z]==plateau.POUSSE_BLANC || plateau.board[z]==plateau.POUSSEUR_BLANC)
+            {
+                //Ceci cacule la ligne de la piece -36, car on doit voir le board a lenvers
+                poidsNoir+=Math.ceil(Math.abs(z-63)/8)*2;
+            }
+            else if (plateau.board[z]==plateau.POUSSE_NOIR || plateau.board[z]==plateau.POUSSEUR_NOIR)
+            {
+                //Ceci cacule la ligne de la piece
+                poidsBlanc+=Math.ceil(z/8)*2;
+            }
+        }
+        //Modif, il va falloir checker avec notre couleur
+        return poidsBlanc-poidsNoir;
+    }
+
     //Fonction qui genere le noeuds, racine represente le noeud parents des enfants qui seront attaches. Pour l'instant, on genere
     //un enfant par mouvement possible et on y associe un poid aleatoire. A chaque appel, on inverse la couleur utilisee precedemment.
     private void genererNoeuds(Noeud racine, Plateau p,boolean couleur){
@@ -52,7 +87,12 @@ public class IA {
         //Boucle qui creera et associera chaque mouvement possible a la racine passee en parametre
         for (int i = 0; i < mouvementsPossibles.size(); i++) {
             int[] boardEnfant = p.deplacerDansBoard(mouvementsPossibles.get(i).ligneDepart, mouvementsPossibles.get(i).colonneDepart, mouvementsPossibles.get(i).ligneArrivee, mouvementsPossibles.get(i).colonneArrivee);
-            mouvementsPossibles.get(i).poids = evaluerPlateau(boardEnfant);
+            //mouvementsPossibles.get(i).poids = evaluerVieux(boardEnfant);
+            //Test
+            mouvementsPossibles.get(i).poids=evaluationPlateau(p);
+            System.out.println("==============================");
+            System.out.println(mouvementsPossibles.get(i).poids);
+
             racine.ajouterEnfant(new Noeud(boardEnfant, mouvementsPossibles.get(i)));
         }
         //Boucle qui fera l'appel recursif pour chaque enfant ajoute dans la boucle precedente.
