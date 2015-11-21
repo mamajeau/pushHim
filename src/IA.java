@@ -18,6 +18,7 @@ public class IA {
     //Valeur arbitaire pour tout changer partout
     int poidsPousseur=2;
     int poidsPousse=1;
+    int multiple=2;
 
     public IA(Plateau plateau)
     {
@@ -49,6 +50,7 @@ public class IA {
     {
         int poidsNoir=0;
         int poidsBlanc=0;
+        int poids=0;
         //Calcule du nombre de piece
         poidsBlanc+=plateau.pousseBlanc.size()*poidsPousse;
         poidsBlanc+=plateau.pousseurBlanc.size()*poidsPousseur;
@@ -62,16 +64,25 @@ public class IA {
             if(plateau.board[z]==plateau.POUSSE_BLANC || plateau.board[z]==plateau.POUSSEUR_BLANC)
             {
                 //Ceci cacule la ligne de la piece -36, car on doit voir le board a lenvers
-                poidsNoir+=Math.ceil(Math.abs(z-63)/8)*2;
+                poidsNoir+=Math.ceil(Math.abs(z-63)/8)*multiple;
             }
             else if (plateau.board[z]==plateau.POUSSE_NOIR || plateau.board[z]==plateau.POUSSEUR_NOIR)
             {
                 //Ceci cacule la ligne de la piece
-                poidsBlanc+=Math.ceil(z/8)*2;
+                poidsBlanc+=Math.ceil(z/8)*multiple;
             }
         }
-        //Modif, il va falloir checker avec notre couleur
-        return poidsBlanc-poidsNoir;
+        //La bonne couleur moins la couleur inverse pour savoir si notre poids est plus grande que l<autre
+        if(couleur)
+        {
+            poids=poidsBlanc-poidsNoir;
+        }
+        else
+        {
+            poids=poidsNoir-poidsBlanc;
+        }
+        System.out.println("couleur"+this.couleur);
+        return poids;
     }
 
     //Fonction qui genere le noeuds, racine represente le noeud parents des enfants qui seront attaches. Pour l'instant, on genere
