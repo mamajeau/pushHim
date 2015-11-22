@@ -1,9 +1,7 @@
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by maaj on 2015-11-02.
@@ -19,6 +17,7 @@ public class IA {
     int poidsPousseur=2;
     int poidsPousse=1;
     int multiple=2;
+    int nombreNoeud=5;
 
     public IA(Plateau plateau)
     {
@@ -32,7 +31,7 @@ public class IA {
         //Minmax represente le noeud racine duquel decoulera le reste de l'arbre
         minMax = new Noeud(plateau.board,null);
         //Appel recursif de la fonction qui va generer les noeuds du minmax
-        genererNoeuds(minMax,plateau,this.couleur);
+        genererNoeuds(minMax,plateau,this.couleur,this.couleur);
 
         Mouvement mouvementAFaire = minMax.listeEnfant.get(randomizer.nextInt(minMax.listeEnfant.size())).mouvementFait;
         return mouvementAFaire;
@@ -81,37 +80,130 @@ public class IA {
         {
             poids=poidsNoir-poidsBlanc;
         }
-        System.out.println("couleur"+this.couleur);
         return poids;
     }
 
     //Fonction qui genere le noeuds, racine represente le noeud parents des enfants qui seront attaches. Pour l'instant, on genere
     //un enfant par mouvement possible et on y associe un poid aleatoire. A chaque appel, on inverse la couleur utilisee precedemment.
-    private void genererNoeuds(Noeud racine, Plateau p,boolean couleur){
+    private void genererNoeuds(Noeud racine, Plateau p,boolean couleur,boolean type){
+        //Type=1 =>blanc Type=0 =>noir
         long stopTime = System.currentTimeMillis();
+        LinkedList<Integer> plusHaut=new LinkedList<>();
+        LinkedList<Integer> plusBas= new LinkedList<>();
+        int maxValue=-1000;
+        int minValue=1000;
+
         //L'arbre va arreter de faire apres 3 secondes
-       if ((stopTime - startTime) > 3000){
+
+        //Bon mais en commentiare pour des tests seulement
+      /* if ((stopTime - startTime) > 3000){
             return;
-        }
+        }*/
+
         ArrayList<Mouvement> mouvementsPossibles;
         mouvementsPossibles = p.genererMouvements(couleur);
+
         //Boucle qui creera et associera chaque mouvement possible a la racine passee en parametre
         for (int i = 0; i < mouvementsPossibles.size(); i++) {
             int[] boardEnfant = p.deplacerDansBoard(mouvementsPossibles.get(i).ligneDepart, mouvementsPossibles.get(i).colonneDepart, mouvementsPossibles.get(i).ligneArrivee, mouvementsPossibles.get(i).colonneArrivee);
             //mouvementsPossibles.get(i).poids = evaluerVieux(boardEnfant);
             //Test
-            mouvementsPossibles.get(i).poids=evaluationPlateau(p);
-            System.out.println("==============================");
-            System.out.println(mouvementsPossibles.get(i).poids);
+            // Pour linstant ca lair que je ne prend pas le bon board, fak ca va devoir etre checker
+            int poids=evaluationPlateau(p);
+            mouvementsPossibles.get(i).poids=poids;
 
-            racine.ajouterEnfant(new Noeud(boardEnfant, mouvementsPossibles.get(i)));
+            //contruction da la liste des meilleurs noeuds
+
+            if(type)
+            {
+                if (poids>=maxValue)
+                {
+                    if(poids==maxValue && plusHaut.size()==nombreNoeud)
+                    {
+                        //Cette partie est pour le fait que nous aillons 12 valeurs maximum, on choisit au hasard lesquels
+                        Random random = new Random();
+                        if(random.nextBoolean())
+                        {
+                            plusHaut.removeFirst();
+                            plusHaut.add(i);
+                        }
+                    }
+                    else
+                    {
+                        if(plusHaut.size()>nombreNoeud)
+                        {
+                            plusHaut.removeFirst();
+                        }
+                        plusHaut.add(i);
+                    }
+                    if (poids>maxValue){
+                        maxValue = poids;
+                    }
+                }
+            }
+            else
+            {
+                if (poids<=minValue)
+                {
+                    if(poids==minValue && plusBas.size()==nombreNoeud)
+                    {
+                        //Cette partie est pour le fait que nous aillons 12 valeurs maximum, on choisit au hasard lesquels
+                        Random random = new Random();
+                        if(random.nextBoolean())
+                        {
+                            plusBas.removeFirst();
+                            plusBas.add(i);
+                        }
+                    }
+                    else
+                    {
+                        if(plusBas.size()>nombreNoeud)
+                        {
+                            plusBas.removeFirst();
+                        }
+                        plusBas.add(i);
+                    }
+                    if (poids>minValue){
+                        minValue = poids;
+                    }
+                }
+            }
         }
+        System.out.println("Liste plus haut=====");
+        System.out.println(plusHaut);
+        System.out.println("=================");
+        System.out.println("Liste plus bas=====");
+        System.out.println(plusBas);
+        System.out.println("=================");
+        //Ajout des noeuds de la liste de plus hautes valeurs
+        if(type)
+        {
+            for (int j=0;j<plusHaut.size();j++)
+            {
+                int i=plusHaut.get(j);
+                int[] boardEnfant = p.deplacerDansBoard(mouvementsPossibles.get(i).ligneDepart, mouvementsPossibles.get(i).colonneDepart, mouvementsPossibles.get(i).ligneArrivee, mouvementsPossibles.get(i).colonneArrivee);
+                racine.ajouterEnfant(new Noeud(boardEnfant, mouvementsPossibles.get(i)));
+            }
+        }
+        else
+        {
+            for (int j=0;j<plusBas.size();j++)
+            {
+                int i=plusBas.get(j);
+                int[] boardEnfant = p.deplacerDansBoard(mouvementsPossibles.get(i).ligneDepart, mouvementsPossibles.get(i).colonneDepart, mouvementsPossibles.get(i).ligneArrivee, mouvementsPossibles.get(i).colonneArrivee);
+                racine.ajouterEnfant(new Noeud(boardEnfant, mouvementsPossibles.get(i)));
+            }
+        }
+
+
+        //boucle qui va ajouter les 5 nouveaux noeuds
+
         //Boucle qui fera l'appel recursif pour chaque enfant ajoute dans la boucle precedente.
-        for (int i = 0; i < racine.listeEnfant.size(); i++) {
+        /*for (int i = 0; i < racine.listeEnfant.size(); i++) {
             Jeu j = new Jeu();
             j.construirePlateau(racine.listeEnfant.get(i).getBoard());
             genererNoeuds(racine.listeEnfant.get(i), j.plateau, !couleur);
-        }
+        }*/
 }
 
     public String jouerCoup()
