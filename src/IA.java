@@ -18,23 +18,25 @@ public class IA {
     int poidsPousse=1;
     int multiple=2;
     int nombreNoeud=5;
-
+    Mouvement mouvementAFaire;
     public IA(Plateau plateau)
     {
         this.plateau=plateau;
     }
 
-    public Mouvement choixCoup()
+    public void choixCoup()
     {
         startTime = System.currentTimeMillis();
         Random randomizer = new Random();
         //Minmax represente le noeud racine duquel decoulera le reste de l'arbre
         minMax = new Noeud(plateau.board,null);
         //Appel recursif de la fonction qui va generer les noeuds du minmax
-        genererNoeuds(minMax,plateau,this.couleur,this.couleur);
-
-        Mouvement mouvementAFaire = minMax.listeEnfant.get(randomizer.nextInt(minMax.listeEnfant.size())).mouvementFait;
-        return mouvementAFaire;
+        genererNoeuds(minMax,plateau,this.couleur,0);
+        mouvementAFaire = null;
+        int max;
+        max = elagageAlphaBeta(minMax, 0, 100, -100);
+        System.out.println("=================>>" + max);
+        //Mouvement mouvementAFaire = minMax.listeEnfant.get(randomizer.nextInt(minMax.listeEnfant.size())).mouvementFait;
     }
 
     //Fonction qui evaluera un plateau et lui assignera une valeur
@@ -44,6 +46,52 @@ public class IA {
         return poids;
     }
 
+    //Fonction elagage
+
+    private int elagageAlphaBeta(Noeud racine, int profondeur, int min, int max){
+        int score = 0;
+        long stopTime = System.currentTimeMillis();
+        if ((stopTime - startTime) > 400000){
+            return 0;
+        }
+        if (racine.listeEnfant.size() == 0){
+            return racine.mouvementFait.poids;
+        }
+        //Si c'est pair, on cherche un max
+        if(profondeur == 0){
+            for (int i=0; i<racine.listeEnfant.size(); i++) {
+                score = elagageAlphaBeta(racine.listeEnfant.get(i), profondeur + 1, min, max);
+                if (score >= max) {
+                    max = score;
+                    if (profondeur == 0) {
+                        mouvementAFaire = racine.listeEnfant.get(i).mouvementFait;
+                    }
+                }
+            }
+            return max;
+        }
+        else if(profondeur % 2 == 0){
+            for (int i=0; i<racine.listeEnfant.size(); i++) {
+                score = elagageAlphaBeta(racine.listeEnfant.get(i), profondeur + 1, min, max);
+                if (score >= max) {
+                    max = score;
+                    if (profondeur == 0) {
+                        mouvementAFaire = racine.listeEnfant.get(i).mouvementFait;
+                    }
+                }
+            }
+            return max;
+        }
+        else{
+            for (int i=0; i<racine.listeEnfant.size(); i++){
+                score = elagageAlphaBeta(racine.listeEnfant.get(i),profondeur + 1,min,max);
+                if (score <= min){
+                    min = score;
+                }
+            }
+            return min;
+        }
+    }
     //Fonction devaluation
     private int evaluationPlateau(Plateau plateau)
     {
@@ -80,12 +128,35 @@ public class IA {
         {
             poids=poidsNoir-poidsBlanc;
         }
+        System.out.println(poids);
         return poids;
     }
 
     //Fonction qui genere le noeuds, racine represente le noeud parents des enfants qui seront attaches. Pour l'instant, on genere
     //un enfant par mouvement possible et on y associe un poid aleatoire. A chaque appel, on inverse la couleur utilisee precedemment.
-    private void genererNoeuds(Noeud racine, Plateau p,boolean couleur,boolean type){
+    private void genererNoeuds(Noeud racine, Plateau p,boolean couleur, int profondeur){
+        long stopTime = System.currentTimeMillis();
+        //L'arbre va arreter de faire apres 4 secondes
+        if ((stopTime - startTime) > 2000){
+            return;
+        }
+        if (profondeur > 3){
+            return;
+        }
+            ArrayList<Mouvement> mouvementsPossibles;
+            mouvementsPossibles = p.genererMouvements(couleur);
+            //Boucle qui creera et associera chaque mouvement possible a la racine passee en parametre
+            for (int i = 0; i < mouvementsPossibles.size(); i++) {
+                int[] boardEnfant = p.deplacerDansBoard(mouvementsPossibles.get(i).ligneDepart, mouvementsPossibles.get(i).colonneDepart, mouvementsPossibles.get(i).ligneArrivee, mouvementsPossibles.get(i).colonneArrivee);
+                mouvementsPossibles.get(i).poids = evaluationPlateau(new Plateau(boardEnfant));
+                racine.ajouterEnfant(new Noeud(boardEnfant, mouvementsPossibles.get(i)));
+            }
+                //Boucle qui fera l'appel recursif pour chaque enfant ajoute dans la boucle precedente.
+            for (int i = 0; i < racine.listeEnfant.size(); i++) {
+                genererNoeuds(racine.listeEnfant.get(i), new Plateau(racine.listeEnfant.get(i).board), !couleur, profondeur + 1);
+            }
+        }
+    /* private void genererNoeuds(Noeud racine, Plateau p,boolean couleur,boolean type){
         //Type=1 =>blanc Type=0 =>noir
         long stopTime = System.currentTimeMillis();
         LinkedList<Integer> plusHaut=new LinkedList<>();
@@ -98,7 +169,7 @@ public class IA {
         //Bon mais en commentiare pour des tests seulement
       /* if ((stopTime - startTime) > 3000){
             return;
-        }*/
+        }
 
         ArrayList<Mouvement> mouvementsPossibles;
         mouvementsPossibles = p.genererMouvements(couleur);
@@ -109,7 +180,7 @@ public class IA {
             //mouvementsPossibles.get(i).poids = evaluerVieux(boardEnfant);
             //Test
             // Pour linstant ca lair que je ne prend pas le bon board, fak ca va devoir etre checker
-            int poids=evaluationPlateau(p);
+            int poids=evaluationPlateau(new Plateau(boardEnfant));
             mouvementsPossibles.get(i).poids=poids;
 
             //contruction da la liste des meilleurs noeuds
@@ -199,17 +270,16 @@ public class IA {
         //boucle qui va ajouter les 5 nouveaux noeuds
 
         //Boucle qui fera l'appel recursif pour chaque enfant ajoute dans la boucle precedente.
-        /*for (int i = 0; i < racine.listeEnfant.size(); i++) {
+        for (int i = 0; i < racine.listeEnfant.size(); i++) {
             Jeu j = new Jeu();
             j.construirePlateau(racine.listeEnfant.get(i).getBoard());
             genererNoeuds(racine.listeEnfant.get(i), j.plateau, !couleur);
-        }*/
-}
+        }
+}*/
 
     public String jouerCoup()
     {
-        Mouvement mouvementAFaire=null;
-        mouvementAFaire = choixCoup();
+        choixCoup();
 
         //On deplace dans notre plateau global
         System.out.println(mouvementAFaire.colonneDepart + " " + mouvementAFaire.ligneDepart);
