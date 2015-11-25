@@ -317,7 +317,7 @@ public class Plateau implements Cloneable{
 
         Convertisseur conv = Convertisseur.getInstance();
         //Deplacer dans les mapping
-        board[((ligneArrivee)*8)+colonneArrivee]=board[((ligneDepart)*8)+colonneArrivee];
+        board[((ligneArrivee)*8)+colonneArrivee]=board[((ligneDepart)*8)+colonneDepart];
         System.out.print("Switch !!!!!!!!!!!!!!!!!!!!!!!!!!");
         board[((ligneDepart) * 8) +colonneDepart] = 0;
        // afficherBoard();

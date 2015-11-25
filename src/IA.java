@@ -107,8 +107,14 @@ public class IA {
 
         if (poidsBlanc>poidsNoir)
         {
+
+            /*System.out.println("Size des pions===========");
+            System.out.println(plateau.pousseNoir.size());
+            System.out.println(plateau.pousseurNoir.size());*/
+
             poidsBlanc+=1000;
         }
+
 
         //Calcule du poids par rapport a la position
 
@@ -130,7 +136,6 @@ public class IA {
                 poids = poidsNoir - poidsBlanc;
             }
 
-        System.out.println(poids);
         return poids;
     }
 
