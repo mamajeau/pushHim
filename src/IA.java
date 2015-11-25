@@ -34,7 +34,7 @@ public class IA {
         genererNoeuds(minMax,plateau,this.couleur,0);
         mouvementAFaire = null;
         int max;
-        max = elagageAlphaBeta(minMax, 0, 100, -100);
+        max = elagageAlphaBeta(minMax, 0, 2000, -2000);
         System.out.println("=================>>" + max);
         //Mouvement mouvementAFaire = minMax.listeEnfant.get(randomizer.nextInt(minMax.listeEnfant.size())).mouvementFait;
     }
@@ -111,14 +111,13 @@ public class IA {
         poidsNoir+=plateau.pousseNoir.size()*poidsPousse;
         poidsNoir+=plateau.pousseurNoir.size()*poidsPousseur;
 
-        if (poidsBlanc>poidsNoir)
+        if (poidsBlanc>=poidsNoir)
         {
-
-            /*System.out.println("Size des pions===========");
-            System.out.println(plateau.pousseNoir.size());
-            System.out.println(plateau.pousseurNoir.size());*/
-
             poidsBlanc+=1000;
+        }
+        if(poidsNoir>=poidsBlanc)
+        {
+            poidsNoir+=1000;
         }
 
 
@@ -153,7 +152,7 @@ public class IA {
         if ((stopTime - startTime) > 2000){
             return;
         }
-        if (profondeur > 3){
+        if (profondeur > 5){
             return;
         }
             ArrayList<Mouvement> mouvementsPossibles;
