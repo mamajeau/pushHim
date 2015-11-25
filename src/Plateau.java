@@ -120,13 +120,13 @@ public class Plateau implements Cloneable{
             for (int pos: pousseurBlanc) {
                 coord = new int[]{pos % 8, pos / 8};//col,ligne
 
-                if((coord[1]-1) > 0) { //Fin du tableau
+                if((coord[1]-1) >= 0) { //Fin du tableau
                     if (coord[0] != 0) {//gauche
                         coord_cible = new int[]{(pos % 8)-1, (pos / 8)-1};
                         cible = getBoardValue(coord_cible[0],coord_cible[1]);
                         if(cible == POUSSE_BLANC) //gauche pousse
                         {
-                            if((coord_cible[1]-1) > 0) {//Fin du tableau
+                            if((coord_cible[1]-1) >= 0) {//Fin du tableau
                                 if (coord_cible[0] != 0) {
                                     coord_cible2 = new int[]{(pos % 8)-2, (pos / 8)-2};
                                     cible2 = getBoardValue(coord_cible2[0],coord_cible2[1]);
@@ -151,7 +151,7 @@ public class Plateau implements Cloneable{
                         cible = getBoardValue(coord_cible[0],coord_cible[1]);
                     if(cible == POUSSE_BLANC) //haut pousse
                     {
-                        if((coord_cible[1]-1) > 0) { //Fin du tableau
+                        if((coord_cible[1]-1) >= 0) { //Fin du tableau
                             coord_cible2 = new int[]{(pos % 8), (pos / 8)-2};
                             cible2 = getBoardValue(coord_cible2[0],coord_cible2[1]);
                             if(cible2 == POUSSE_BLANC || cible2 == POUSSE_NOIR || cible2 == POUSSEUR_NOIR || cible2 == POUSSEUR_BLANC)
@@ -174,7 +174,7 @@ public class Plateau implements Cloneable{
                         cible = getBoardValue(coord_cible[0],coord_cible[1]);
                         if(cible == POUSSE_BLANC) //droite pousse
                         {
-                            if((coord_cible[1]-1) > 0) { //Fin du tableau
+                            if((coord_cible[1]-1) >= 0) { //Fin du tableau
                                 if (coord_cible[0] != 7) {
                                     coord_cible2 = new int[]{(pos % 8)+2, (pos / 8)-2};
                                     cible2 = getBoardValue(coord_cible2[0],coord_cible2[1]);
@@ -200,14 +200,14 @@ public class Plateau implements Cloneable{
             for (int pos: pousseurNoir) {
                 coord = new int[]{pos % 8, pos / 8};//col,ligne
 
-                if((coord[1]+1) < 7) { //Fin du tableau
+                if((coord[1]+1) <= 7) { //Fin du tableau
 
                     if (coord[0] != 0) {//gauche
                         coord_cible = new int[]{(pos % 8)-1, (pos / 8)+1};
                         cible = getBoardValue(coord_cible[0],coord_cible[1]);
                         if(cible == POUSSE_NOIR) //gauche pousse
                         {
-                            if((coord_cible[1]+1) < 7) {//Fin du tableau
+                            if((coord_cible[1]+1) <= 7) {//Fin du tableau
                                 if (coord_cible[0] != 0) {
                                     coord_cible2 = new int[]{(pos % 8)-2, (pos / 8)+2};
                                     cible2 = getBoardValue(coord_cible2[0],coord_cible2[1]);
@@ -234,7 +234,7 @@ public class Plateau implements Cloneable{
                     cible = getBoardValue(coord_cible[0],coord_cible[1]);
                     if(cible == POUSSE_NOIR) //haut pousse
                     {
-                        if((coord_cible[1]+1) < 7) { //Fin du tableau
+                        if((coord_cible[1]+1) <= 7) { //Fin du tableau
                             coord_cible2 = new int[]{(pos % 8), (pos / 8)+2};
                             cible2 = getBoardValue(coord_cible2[0],coord_cible2[1]);
                             if(cible2 == POUSSE_BLANC || cible2 == POUSSE_NOIR || cible2 == POUSSEUR_NOIR || cible2 == POUSSEUR_BLANC)
@@ -260,7 +260,7 @@ public class Plateau implements Cloneable{
                         cible = getBoardValue(coord_cible[0],coord_cible[1]);
                         if(cible == POUSSE_NOIR) //droite pousse
                         {
-                            if((coord_cible[1]+1) < 7) { //Fin du tableau
+                            if((coord_cible[1]+1) <= 7) { //Fin du tableau
                                 if (coord_cible[0] != 7) {
                                     coord_cible2 = new int[]{(pos % 8)+2, (pos / 8)+2};
                                     cible2 = getBoardValue(coord_cible2[0],coord_cible2[1]);

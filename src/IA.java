@@ -49,6 +49,7 @@ public class IA {
     //Fonction elagage
 
     private int elagageAlphaBeta(Noeud racine, int profondeur, int min, int max){
+        Random random = new Random();
         int score = 0;
         long stopTime = System.currentTimeMillis();
         if ((stopTime - startTime) > 400000){
@@ -61,9 +62,14 @@ public class IA {
         if(profondeur == 0){
             for (int i=0; i<racine.listeEnfant.size(); i++) {
                 score = elagageAlphaBeta(racine.listeEnfant.get(i), profondeur + 1, min, max);
-                if (score >= max) {
+                if (score > max) {
                     max = score;
                     if (profondeur == 0) {
+                        mouvementAFaire = racine.listeEnfant.get(i).mouvementFait;
+                    }
+                }
+                if (score == max){
+                    if (profondeur == 0 && random.nextBoolean()) {
                         mouvementAFaire = racine.listeEnfant.get(i).mouvementFait;
                     }
                 }
