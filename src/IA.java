@@ -105,29 +105,31 @@ public class IA {
         poidsNoir+=plateau.pousseNoir.size()*poidsPousse;
         poidsNoir+=plateau.pousseurNoir.size()*poidsPousseur;
 
+        if (poidsBlanc>poidsNoir)
+        {
+            poidsBlanc+=1000;
+        }
+
         //Calcule du poids par rapport a la position
-        for(int z=0;z< plateau.board.length;z++)
-        {
-            if(plateau.board[z]==plateau.POUSSE_BLANC || plateau.board[z]==plateau.POUSSEUR_BLANC)
-            {
-                //Ceci cacule la ligne de la piece -36, car on doit voir le board a lenvers
-                poidsNoir+=Math.ceil(Math.abs(z-63)/8)*multiple;
+
+            for (int z = 0; z < plateau.board.length; z++) {
+                if (plateau.board[z] == plateau.POUSSE_BLANC || plateau.board[z] == plateau.POUSSEUR_BLANC) {
+                    //Ceci cacule la ligne de la piece -36, car on doit voir le board a lenvers
+                    double hauteur = Math.ceil(Math.abs(z - 63) / 8);
+                    poidsNoir += hauteur ;
+                } else if (plateau.board[z] == plateau.POUSSE_NOIR || plateau.board[z] == plateau.POUSSEUR_NOIR) {
+                    //Ceci cacule la ligne de la piece
+                    double hauteur = Math.ceil(z / 8);
+                    poidsBlanc += hauteur;
+                }
             }
-            else if (plateau.board[z]==plateau.POUSSE_NOIR || plateau.board[z]==plateau.POUSSEUR_NOIR)
-            {
-                //Ceci cacule la ligne de la piece
-                poidsBlanc+=Math.ceil(z/8)*multiple;
+            //La bonne couleur moins la couleur inverse pour savoir si notre poids est plus grande que l<autre
+            if (couleur) {
+                poids = poidsBlanc - poidsNoir;
+            } else {
+                poids = poidsNoir - poidsBlanc;
             }
-        }
-        //La bonne couleur moins la couleur inverse pour savoir si notre poids est plus grande que l<autre
-        if(couleur)
-        {
-            poids=poidsBlanc-poidsNoir;
-        }
-        else
-        {
-            poids=poidsNoir-poidsBlanc;
-        }
+
         System.out.println(poids);
         return poids;
     }
