@@ -90,7 +90,7 @@ class Client {
 
                     //Coup du joueur humain
                     jeu.plateau.updateJoueur(s);
-                    jeu.plateau.afficherBoard();
+                   // jeu.plateau.afficherBoard();
 
                     /*System.out.println("Dernier coup : "+ s);
                     System.out.println(s);

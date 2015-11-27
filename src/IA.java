@@ -34,7 +34,7 @@ public class IA {
         genererNoeuds(minMax,plateau,this.couleur,0);
         mouvementAFaire = null;
         int max;
-        max = elagageAlphaBeta(minMax, 0, 2000, -2000);
+        max = elagageAlphaBeta(minMax, 0, 4000, -4000);
 
         //Mouvement mouvementAFaire = minMax.listeEnfant.get(randomizer.nextInt(minMax.listeEnfant.size())).mouvementFait;
     }
@@ -52,7 +52,8 @@ public class IA {
         Random random = new Random();
         int score = 0;
         long stopTime = System.currentTimeMillis();
-        if ((stopTime - startTime) > 400000){
+        if ((stopTime - startTime) > 4000){
+            System.out.println("get out");
             return 0;
         }
         if (racine.listeEnfant.size() == 0){
@@ -115,10 +116,19 @@ public class IA {
         {
             poidsBlanc+=1000;
         }
+        else
+        {
+            poidsBlanc-=1000;
+        }
         if(poidsNoir>=poidsBlanc)
         {
             poidsNoir+=1000;
         }
+        else
+        {
+            poidsNoir-=1000;
+        }
+
 
 
         //Calcule du poids par rapport a la position
@@ -127,10 +137,29 @@ public class IA {
                 if (plateau.board[z] == plateau.POUSSE_BLANC || plateau.board[z] == plateau.POUSSEUR_BLANC) {
                     //Ceci cacule la ligne de la piece -36, car on doit voir le board a lenvers
                     double hauteur = Math.ceil(Math.abs(z - 63) / 8);
+
+                    if(plateau.board[z] == plateau.POUSSEUR_BLANC)
+                    {
+                        hauteur=hauteur/2;
+                    }
+                    if(hauteur>=6)
+                    {
+                        poidsNoir+=500;
+                    }
+
                     poidsNoir += hauteur ;
                 } else if (plateau.board[z] == plateau.POUSSE_NOIR || plateau.board[z] == plateau.POUSSEUR_NOIR) {
                     //Ceci cacule la ligne de la piece
                     double hauteur = Math.ceil(z / 8);
+
+                    if(plateau.board[z] == plateau.POUSSEUR_NOIR)
+                    {
+                        hauteur=hauteur/2;
+                    }
+                    if (hauteur>=6)
+                    {
+                        poidsBlanc+=500;
+                    }
                     poidsBlanc += hauteur;
                 }
             }
