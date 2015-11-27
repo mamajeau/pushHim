@@ -318,7 +318,7 @@ public class Plateau implements Cloneable{
         Convertisseur conv = Convertisseur.getInstance();
         //Deplacer dans les mapping
         board[((ligneArrivee)*8)+colonneArrivee]=board[((ligneDepart)*8)+colonneDepart];
-        System.out.print("Switch !!!!!!!!!!!!!!!!!!!!!!!!!!");
+        //System.out.print("Switch !!!!!!!!!!!!!!!!!!!!!!!!!!");
         board[((ligneDepart) * 8) +colonneDepart] = 0;
        // afficherBoard();
         String idDepart = conv.ChiffreALettre(colonneDepart) + "" + ((8-ligneDepart));
@@ -354,13 +354,11 @@ public class Plateau implements Cloneable{
         for (int i=0; i<64; i++) {
 
             if(i%8==0){
-            System.out.println(ligne);
             ligne = "";
 
             }
             ligne+=(board[i] + "("+i+")");
         }
-        System.out.println(ligne);
     }
     /*
         //Fonction pour addicher les pousseur

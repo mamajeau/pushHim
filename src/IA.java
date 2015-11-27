@@ -35,7 +35,7 @@ public class IA {
         mouvementAFaire = null;
         int max;
         max = elagageAlphaBeta(minMax, 0, 2000, -2000);
-        System.out.println("=================>>" + max);
+
         //Mouvement mouvementAFaire = minMax.listeEnfant.get(randomizer.nextInt(minMax.listeEnfant.size())).mouvementFait;
     }
 
@@ -294,9 +294,9 @@ public class IA {
         choixCoup();
 
         //On deplace dans notre plateau global
-        System.out.println(mouvementAFaire.colonneDepart + " " + mouvementAFaire.ligneDepart);
+        //System.out.println(mouvementAFaire.colonneDepart + " " + mouvementAFaire.ligneDepart);
         String deplacement=plateau.deplacer(mouvementAFaire.ligneDepart,mouvementAFaire.colonneDepart,mouvementAFaire.ligneArrivee,mouvementAFaire.colonneArrivee);
-        System.out.println("Notre coup: "+deplacement);
+        //System.out.println("Notre coup: "+deplacement);
 
         return deplacement;
 
