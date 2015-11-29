@@ -289,7 +289,7 @@ public class Plateau implements Cloneable{
     }
 
     //Fonction pour la mise a jour des mouvements de l'adversaire dans notre board
-    public void updateJoueur(String coordonner)
+    public void updateJoueur(String coordonner, boolean couleur)
     {
         Convertisseur convertisseur = Convertisseur.getInstance();
         //Couper en deux la coordonner
@@ -303,7 +303,23 @@ public class Plateau implements Cloneable{
         int colonneArrivee = convertisseur.LettreAChiffre(sousResultat[1].charAt(0));
         int ligneArrivee = 8 - (Integer.parseInt((String)(""+sousResultat[1].charAt(1))));
 
-        deplacer(ligneDepart,colonneDepart,ligneArrivee,colonneArrivee);
+        //Validation du mouvement adverses
+        ArrayList<Mouvement> mouvementsPossibles = genererMouvements(couleur);
+        boolean valide = false;
+
+        for (int i=0;i<mouvementsPossibles.size(); i++){
+            if(mouvementsPossibles.get(i).ligneDepart == ligneDepart || mouvementsPossibles.get(i).ligneArrivee == ligneArrivee || mouvementsPossibles.get(i).colonneDepart == colonneDepart || mouvementsPossibles.get(i).colonneArrivee == colonneArrivee)
+            {
+                valide = true;
+            }
+        }
+        if (valide) {
+            System.out.println("Mouvement valide");
+            deplacer(ligneDepart, colonneDepart, ligneArrivee, colonneArrivee);
+        }
+        else {
+            System.out.println("MOUVEMENT INVALIDEEEEEEEEEEEEEEEEEE");
+        }
     }
 
 

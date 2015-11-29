@@ -89,7 +89,7 @@ class Client {
                     String s = new String(aBuffer);
 
                     //Coup du joueur humain
-                    jeu.plateau.updateJoueur(s);
+                    jeu.plateau.updateJoueur(s,!joueur.couleur);
                    // jeu.plateau.afficherBoard();
 
                     /*System.out.println("Dernier coup : "+ s);
