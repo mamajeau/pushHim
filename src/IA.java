@@ -34,7 +34,7 @@ public class IA {
         genererNoeuds(minMax,plateau,this.couleur,0);
         mouvementAFaire = null;
         int max;
-        max = elagageAlphaBeta(minMax, 0, 4000, -4000);
+        max = elagageAlphaBeta(minMax, 0, 5000, -5000);
 
         //Mouvement mouvementAFaire = minMax.listeEnfant.get(randomizer.nextInt(minMax.listeEnfant.size())).mouvementFait;
     }
